@@ -1,25 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import Header from './components/Header'
+import Main from './components/Main'
+import { Container, Toolbar } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core'
 
-function App() {
+const useStyles = makeStyles({
+  root: {
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  container: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
+})
+
+const App = () => {
+  const classes = useStyles()
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={classes.root}>
+      <Header />
+      <Toolbar />
+      <Container fixed className={classes.container}>
+        <Main />
+      </Container>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
