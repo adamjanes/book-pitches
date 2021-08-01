@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { useHistory } from 'react-router-dom'
 import {
   Paper,
   Typography,
@@ -11,32 +12,7 @@ import {
   makeStyles,
 } from '@material-ui/core'
 
-const books = [
-  {
-    title: 'Harry Potter',
-    author: 'JK Rowling',
-    rating: '5/10',
-    description: "A young orphan finds out he's a wizard",
-    img_url:
-      'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1474154022l/3._SY475_.jpg',
-  },
-  {
-    title: 'Fantastic Mr. Fox',
-    author: 'Roald Dahl',
-    rating: '7/10',
-    description: 'A fox evades farmers',
-    img_url:
-      'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1390097292l/6693.jpg',
-  },
-  {
-    title: 'Fight Club',
-    author: 'Chuck Palahniuk',
-    rating: '7/10',
-    description: 'An insommniac creates a domestic terrorist organization.',
-    img_url:
-      'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1558216416l/36236124._SY475_.jpg',
-  },
-]
+import { Context as PitchContext } from '../contexts/PitchContext'
 
 const useStyles = makeStyles({
   paper: {
@@ -65,8 +41,16 @@ const useStyles = makeStyles({
   },
 })
 
-const Main = () => {
+const PitchList = () => {
   const classes = useStyles()
+  const history = useHistory()
+  const {
+    state: { books },
+  } = useContext(PitchContext)
+
+  const redirectToCreatePitch = () => {
+    history.push('/create')
+  }
 
   const cards = books.map(book => (
     <Grid item xs={12} md={4}>
@@ -99,8 +83,8 @@ const Main = () => {
     <Paper className={classes.paper}>
       <div className={classes.titleContainer}>
         <Typography variant="h3">My Pitches</Typography>
-        <Button variant="contained" color="primary">
-          Create a review
+        <Button variant="contained" color="primary" onClick={redirectToCreatePitch}>
+          Create a pitch
         </Button>
       </div>
       <Grid container className={classes.cardContainer} spacing={2}>
@@ -110,4 +94,4 @@ const Main = () => {
   )
 }
 
-export default Main
+export default PitchList
