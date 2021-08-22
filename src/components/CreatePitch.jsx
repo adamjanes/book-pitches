@@ -1,5 +1,6 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import axios from 'axios'
 import {
   Paper,
   Typography,
@@ -10,8 +11,12 @@ import {
   Slider,
   FormGroup,
 } from '@material-ui/core'
+import Autocomplete from '@material-ui/lab/Autocomplete'
 
 import { Context as PitchContext } from '../contexts/PitchContext'
+
+// API KEY - AIzaSyDaS2usw0H_q5oo1pxfnyeWRzNWoheWaXY
+const BASE_URL = 'https://www.googleapis.com/books/v1/volumes?q='
 
 const useStyles = makeStyles({
   paper: {
@@ -34,27 +39,42 @@ const CreateForm = () => {
   const classes = useStyles()
   const history = useHistory()
   const { addPitch } = useContext(PitchContext)
-  const [title, setTitle] = useState('')
+  const [bookInfo, setBookInfo] = useState('')
   const [rating, setRating] = useState(0)
   const [pitch, setPitch] = useState('')
+  const [inputValue, setInputValue] = useState('')
+  const [autocompleteBooks, setAutocompleteBooks] = useState([])
+
+  useEffect(() => {
+    // TODO: request debouncing
+    if (inputValue) {
+      axios.get(BASE_URL + inputValue).then(response => {
+        setAutocompleteBooks(response.data.items.map(book => book.volumeInfo))
+      })
+    }
+  }, [inputValue])
+
+  // console.log(autocompleteBooks)
 
   const redirectToHomePage = () => {
     history.push('/')
   }
 
   const createPitch = () => {
+    console.log(bookInfo)
     const newBook = {
-      title,
-      author: 'JK Rowling',
+      title: bookInfo.title,
+      author: bookInfo.authors[0],
+      description: bookInfo.description,
       rating,
-      description: "A young orphan finds out he's a wizard",
       pitch,
-      img_url:
-        'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1474154022l/3._SY475_.jpg',
+      img_url: bookInfo.imageLinks?.thumbnail || '',
     }
     addPitch(newBook)
     redirectToHomePage()
   }
+
+  console.log(bookInfo)
 
   return (
     <Paper className={classes.paper}>
@@ -64,14 +84,20 @@ const CreateForm = () => {
           Back
         </Button>
       </div>
+      {bookInfo && <img src={bookInfo.imageLinks?.thumbnail || 'https:example.com'} />}
       <FormGroup className={classes.formGroup}>
-        <TextField
-          label="Book Title"
-          type="text"
-          variant="outlined"
-          fullWidth
-          value={title}
-          onChange={event => setTitle(event.target.value)}
+        <Autocomplete
+          value={bookInfo}
+          onChange={(e, value) => setBookInfo(value)}
+          inputValue={inputValue}
+          onInputChange={(e, value) => setInputValue(value)}
+          freeSolo
+          getOptionSelected={(option, value) => option.infoLink === value.infoLink}
+          getOptionLabel={option => option?.title || ''}
+          options={autocompleteBooks.map(book => book)}
+          renderInput={params => (
+            <TextField {...params} label="Book Title" margin="normal" variant="outlined" />
+          )}
         />
       </FormGroup>
       <FormGroup className={classes.formGroup}>

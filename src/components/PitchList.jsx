@@ -75,10 +75,6 @@ const PitchList = () => {
     </Grid>
   ))
 
-  // TODO: search request from Google Books API for adding new pitch
-  // URL - https://www.googleapis.com/books/v1/volumes?q=harry+potter
-  // API KEY - AIzaSyDaS2usw0H_q5oo1pxfnyeWRzNWoheWaXY
-
   return (
     <Paper className={classes.paper}>
       <div className={classes.titleContainer}>

@@ -1,41 +1,17 @@
 import createDataContext from './createDataContext'
+import firebase from 'firebase'
 
 const ADD_BOOK = 'ADD_BOOK'
+const FETCH_BOOKS = 'FETCH_BOOKS'
 
 const initialState = {
-  books: [
-    {
-      title: 'Harry Potter',
-      author: 'JK Rowling',
-      rating: '5/10',
-      description: "A young orphan finds out he's a wizard",
-      pitch: '',
-      img_url:
-        'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1474154022l/3._SY475_.jpg',
-    },
-    {
-      title: 'Fantastic Mr. Fox',
-      author: 'Roald Dahl',
-      rating: '7/10',
-      description: 'A fox evades farmers',
-      pitch: '',
-      img_url:
-        'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1390097292l/6693.jpg',
-    },
-    {
-      title: 'Fight Club',
-      author: 'Chuck Palahniuk',
-      rating: '7/10',
-      description: 'An insommniac creates a domestic terrorist organization.',
-      pitch: '',
-      img_url:
-        'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1558216416l/36236124._SY475_.jpg',
-    },
-  ],
+  books: [],
 }
 
 const pitchReducer = (state, action) => {
   switch (action.type) {
+    case FETCH_BOOKS:
+      return { ...state, books: action.payload }
     case ADD_BOOK:
       return { ...state, books: [...state.books, action.payload] }
     default:
@@ -51,4 +27,21 @@ const addPitch = dispatch => async payload => {
   }
 }
 
-export const { Provider, Context } = createDataContext(pitchReducer, { addPitch }, initialState)
+const fetchBooks = dispatch => async () => {
+  try {
+    const books = firebase
+      .database()
+      .ref('books')
+      .on('value', snapshot => {
+        dispatch({ type: FETCH_BOOKS, payload: snapshot.val() })
+      })
+  } catch (err) {
+    console.log('error')
+  }
+}
+
+export const { Provider, Context } = createDataContext(
+  pitchReducer,
+  { addPitch, fetchBooks },
+  initialState
+)
