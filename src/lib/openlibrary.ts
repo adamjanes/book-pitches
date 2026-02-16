@@ -46,3 +46,43 @@ export async function searchBooks(query: string): Promise<OLSearchResponse> {
 
   return response.json();
 }
+
+/**
+ * Fetch book description from Open Library work detail endpoint
+ * @param workKey - Work key (e.g., "/works/OL45883W" or "OL45883W")
+ * @returns Description string or null if unavailable
+ */
+export async function fetchBookDescription(workKey: string): Promise<string | null> {
+  try {
+    // Normalize work key (strip leading slash if present)
+    const key = workKey.startsWith('/works/') ? workKey : `/works/${workKey}`;
+
+    const response = await fetch(
+      `https://openlibrary.org${key}.json`,
+      {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+      }
+    );
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+
+    // Description can be a string or an object with a 'value' property
+    if (typeof data.description === 'string') {
+      return data.description;
+    } else if (data.description && typeof data.description.value === 'string') {
+      return data.description.value;
+    }
+
+    return null;
+  } catch (error) {
+    // Return null on any failure (network error, parse error, etc.)
+    return null;
+  }
+}
