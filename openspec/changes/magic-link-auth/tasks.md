@@ -17,10 +17,10 @@
 
 ## 4. Supabase Email Template
 
-- [ ] 4.1 Configure magic link email template in Supabase dashboard — subject: "Your Book Pitches sign-in link", sender name: "Book Pitches", branded body copy matching parchment/warm tone
+- [ ] 4.1 **MANUAL TASK** — Configure magic link email template in Supabase dashboard (see `EMAIL_TEMPLATE_INSTRUCTIONS.md` for exact configuration)
 
 ## 5. Cleanup
 
 - [x] 5.1 Remove unused password-related types, state, and imports from auth components — ✅ Verified: no password-related code exists in codebase
 - [x] 5.2 Verify auth callback (`/auth/callback/route.ts`) still works correctly with magic-link-only flow — ✅ Verified: uses `exchangeCodeForSession` (correct for magic link PKCE)
-- [ ] 5.3 Test full flow: enter email → check-email screen → click link in email → authenticated and redirected
+- [ ] 5.3 **MANUAL TASK** — Test full flow: enter email → check-email screen → click link in email → authenticated and redirected (requires task 4.1 complete)
