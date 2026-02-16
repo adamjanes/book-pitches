@@ -1,8 +1,8 @@
 ## 1. Unified Login Page
 
-- [ ] 1.1 Rewrite `LoginForm.tsx` to remove password mode — single email input + "Send Magic Link" button, calls `signInWithOtp`, redirects to `/login/check-email?email=<encoded>`
-- [ ] 1.2 Update `/login/page.tsx` heading and copy to reflect unified auth ("Sign in or create an account")
-- [ ] 1.3 Remove the signup link from the login page
+- [x] 1.1 Rewrite `LoginForm.tsx` to remove password mode — single email input + "Send Magic Link" button, calls `signInWithOtp`, redirects to `/login/check-email?email=<encoded>`
+- [x] 1.2 Update `/login/page.tsx` heading and copy to reflect unified auth ("Sign in or create an account")
+- [x] 1.3 Remove the signup link from the login page
 
 ## 2. Check Your Email Screen
 
