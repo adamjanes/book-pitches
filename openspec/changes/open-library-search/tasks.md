@@ -8,10 +8,10 @@
 
 ## 2. Book Create-or-Get Server Action
 
-- [ ] 2.1. Create `src/app/actions/books.ts` with a `createOrGetBook` Server Action that accepts Open Library metadata (title, author, openLibraryKey, coverUrl, publishedYear)
-- [ ] 2.2. Implement dedup logic: query `books` table by `open_library_key` first, return existing record if found
-- [ ] 2.3. If not found, fetch description from Open Library work detail endpoint, generate slug from title, insert new book record, return it
-- [ ] 2.4. Handle race condition: catch unique constraint error on `open_library_key` and return the existing record instead of throwing
+- [x] 2.1. Create `src/app/actions/books.ts` with a `createOrGetBook` Server Action that accepts Open Library metadata (title, author, openLibraryKey, coverUrl, publishedYear)
+- [x] 2.2. Implement dedup logic: query `books` table by `open_library_key` first, return existing record if found
+- [x] 2.3. If not found, fetch description from Open Library work detail endpoint, generate slug from title, insert new book record, return it
+- [x] 2.4. Handle race condition: catch unique constraint error on `open_library_key` and return the existing record instead of throwing
 
 ## 3. BookSearch Component
 
