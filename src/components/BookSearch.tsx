@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { searchBooks, type OLSearchResult } from '@/lib/openlibrary'
+import { searchBooks, getBookCoverUrl, type OLSearchResult } from '@/lib/openlibrary'
 
 interface BookSearchProps {
   onBookSelected?: (book: any) => void
@@ -58,8 +58,47 @@ export default function BookSearch({ onBookSelected }: BookSearchProps) {
       </div>
 
       {/* Results Area */}
-      <div className="space-y-2">
-        {/* Results will be rendered here in subsequent tasks */}
+      <div className="grid gap-3">
+        {results.map((book) => {
+          const coverUrl = getBookCoverUrl(book.cover_i, 'M')
+          const author = book.author_name?.[0] || 'Unknown Author'
+          const year = book.first_publish_year || 'Year unknown'
+
+          return (
+            <div
+              key={book.key}
+              className="flex gap-3 p-3 border border-accent/20 rounded-lg bg-white/50 hover:bg-white/80 hover:border-accent/40 transition-all cursor-pointer"
+            >
+              {/* Cover Thumbnail */}
+              <div className="flex-shrink-0 w-16 h-24 bg-muted/30 rounded overflow-hidden border border-accent/10">
+                {coverUrl ? (
+                  <img
+                    src={coverUrl}
+                    alt={`Cover of ${book.title}`}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-muted text-xs">
+                    No cover
+                  </div>
+                )}
+              </div>
+
+              {/* Book Info */}
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-foreground line-clamp-2 mb-1">
+                  {book.title}
+                </h3>
+                <p className="text-sm text-muted/80">
+                  {author}
+                </p>
+                <p className="text-xs text-muted/60 mt-1">
+                  {year}
+                </p>
+              </div>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
