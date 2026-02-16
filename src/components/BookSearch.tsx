@@ -98,6 +98,13 @@ export default function BookSearch({ onBookSelected }: BookSearchProps) {
         </div>
       )}
 
+      {/* Empty Results Message */}
+      {!loading && !error && query.trim().length >= 3 && results.length === 0 && (
+        <div className="flex items-center justify-center py-8">
+          <p className="text-sm text-muted">No books found</p>
+        </div>
+      )}
+
       {/* Results Area */}
       <div className="grid gap-3">
         {results.map((book) => {
