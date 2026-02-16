@@ -12,7 +12,7 @@
 
 ## 3. Remove Signup Page
 
-- [ ] 3.1 Delete `src/app/(auth)/signup/` directory (page.tsx + SignupForm.tsx)
+- [x] 3.1 Delete `src/app/(auth)/signup/` directory (page.tsx + SignupForm.tsx)
 - [ ] 3.2 Add redirect from `/signup` to `/login` (Next.js redirect in `next.config.ts`)
 
 ## 4. Supabase Email Template
