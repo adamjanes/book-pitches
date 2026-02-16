@@ -6,9 +6,9 @@
 
 ## 2. Check Your Email Screen
 
-- [ ] 2.1 Create `/login/check-email/page.tsx` — reads `email` query param, displays confirmation message with email address, instructions, and resend button
-- [ ] 2.2 Implement resend logic — calls `signInWithOtp` again, shows success/error feedback, handles 60-second cooldown error from Supabase
-- [ ] 2.3 Redirect to `/login` if no `email` query param is present
+- [x] 2.1 Create `/login/check-email/page.tsx` — reads `email` query param, displays confirmation message with email address, instructions, and resend button
+- [x] 2.2 Implement resend logic — calls `signInWithOtp` again, shows success/error feedback, handles 60-second cooldown error from Supabase
+- [x] 2.3 Redirect to `/login` if no `email` query param is present
 
 ## 3. Remove Signup Page
 
