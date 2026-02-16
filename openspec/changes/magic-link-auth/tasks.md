@@ -13,7 +13,7 @@
 ## 3. Remove Signup Page
 
 - [x] 3.1 Delete `src/app/(auth)/signup/` directory (page.tsx + SignupForm.tsx)
-- [ ] 3.2 Add redirect from `/signup` to `/login` (Next.js redirect in `next.config.ts`)
+- [x] 3.2 Add redirect from `/signup` to `/login` (Next.js redirect in `next.config.ts`)
 
 ## 4. Supabase Email Template
 
@@ -21,6 +21,6 @@
 
 ## 5. Cleanup
 
-- [ ] 5.1 Remove unused password-related types, state, and imports from auth components
-- [ ] 5.2 Verify auth callback (`/auth/callback/route.ts`) still works correctly with magic-link-only flow
+- [x] 5.1 Remove unused password-related types, state, and imports from auth components — ✅ Verified: no password-related code exists in codebase
+- [x] 5.2 Verify auth callback (`/auth/callback/route.ts`) still works correctly with magic-link-only flow — ✅ Verified: uses `exchangeCodeForSession` (correct for magic link PKCE)
 - [ ] 5.3 Test full flow: enter email → check-email screen → click link in email → authenticated and redirected
