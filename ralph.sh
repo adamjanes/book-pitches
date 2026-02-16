@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 # Ralph loop with streaming output + logging
+# Exits automatically when Claude outputs ALL_TASKS_COMPLETE
 set -uo pipefail
 
 LOGFILE="ralph-$(date '+%Y%m%d-%H%M%S').log"
+DONE_FLAG=$(mktemp)
+rm "$DONE_FLAG"  # remove so we can test existence
+
+trap 'rm -f "$DONE_FLAG"' EXIT
 
 echo "Starting Ralph loop. Ctrl+C to stop."
 echo "Logging to: $LOGFILE"
@@ -18,7 +23,19 @@ while :; do
     --max-turns 30 \
     --output-format=stream-json \
     | ./ralph-filter.sh \
-    | tee -a "$LOGFILE"
+    | tee -a "$LOGFILE" \
+    | while IFS= read -r line; do
+        echo "$line"
+        if [[ "$line" == *"ALL_TASKS_COMPLETE"* ]]; then
+          touch "$DONE_FLAG"
+        fi
+      done
+
+  if [[ -f "$DONE_FLAG" ]]; then
+    echo "" | tee -a "$LOGFILE"
+    echo "=== ALL TASKS COMPLETE — Ralph loop finished ===" | tee -a "$LOGFILE"
+    break
+  fi
 
   echo "--- Restarting in 5s ---" | tee -a "$LOGFILE"
   sleep 5
