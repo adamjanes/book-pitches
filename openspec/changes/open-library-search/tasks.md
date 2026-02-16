@@ -15,8 +15,8 @@
 
 ## 3. BookSearch Component
 
-- [ ] 3.1. Create `src/components/BookSearch.tsx` client component with a search input field and results area
-- [ ] 3.2. Implement 300ms debounce on input using a custom hook or setTimeout pattern. Enforce 3-character minimum before searching.
+- [x] 3.1. Create `src/components/BookSearch.tsx` client component with a search input field and results area
+- [x] 3.2. Implement 300ms debounce on input using a custom hook or setTimeout pattern. Enforce 3-character minimum before searching.
 - [ ] 3.3. Use AbortController to cancel in-flight requests when new input arrives
 - [ ] 3.4. Display search results as cards with cover thumbnail (or placeholder), title, first author, and publish year
 - [ ] 3.5. Add loading spinner state while API request is in flight
