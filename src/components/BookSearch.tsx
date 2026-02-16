@@ -11,6 +11,7 @@ export default function BookSearch({ onBookSelected }: BookSearchProps) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<OLSearchResult[]>([])
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   // Debounced search with 300ms delay and 3-character minimum
   useEffect(() => {
@@ -18,6 +19,7 @@ export default function BookSearch({ onBookSelected }: BookSearchProps) {
     if (query.trim().length < 3) {
       setResults([])
       setLoading(false)
+      setError(null)
       return
     }
 
@@ -27,16 +29,36 @@ export default function BookSearch({ onBookSelected }: BookSearchProps) {
     // Set up debounce timer
     const timeoutId = setTimeout(async () => {
       setLoading(true)
+      setError(null)
+
+      // Set up timeout for the search request (8 seconds)
+      const timeoutTimer = setTimeout(() => {
+        abortController.abort()
+      }, 8000)
+
       try {
         const response = await searchBooks(query.trim(), abortController.signal)
+        clearTimeout(timeoutTimer)
         setResults(response.docs)
         setLoading(false)
       } catch (error) {
+        clearTimeout(timeoutTimer)
+
         // Ignore abort errors (they're expected when user types)
         if (error instanceof Error && error.name === 'AbortError') {
+          // Check if this was a timeout or user-initiated abort
+          // If still loading, it was likely a timeout
+          if (loading) {
+            setError('Search unavailable, please try again')
+            setLoading(false)
+            setResults([])
+          }
           return
         }
+
+        // Handle other API failures
         console.error('Search failed:', error)
+        setError('Search unavailable, please try again')
         setResults([])
         setLoading(false)
       }
@@ -66,6 +88,13 @@ export default function BookSearch({ onBookSelected }: BookSearchProps) {
       {loading && (
         <div className="flex items-center justify-center py-8">
           <div className="w-8 h-8 border-4 border-accent/20 border-t-accent rounded-full animate-spin" />
+        </div>
+      )}
+
+      {/* Error Message */}
+      {error && (
+        <div className="flex items-center justify-center py-8">
+          <p className="text-sm text-red-600">{error}</p>
         </div>
       )}
 
