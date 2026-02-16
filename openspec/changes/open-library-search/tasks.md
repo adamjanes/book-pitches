@@ -36,4 +36,4 @@
 - [x] 5.2. Verify: search returns results, covers display, debounce works, loading states show
 - [x] 5.3. Verify: selecting a new book creates a record in Supabase with correct fields
 - [x] 5.4. Verify: selecting the same book twice returns the existing record (dedup works)
-- [ ] 5.5. Remove the `/test-search` page after verification
+- [x] 5.5. Remove the `/test-search` page after verification
