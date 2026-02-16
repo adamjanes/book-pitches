@@ -4,7 +4,7 @@
 
 - [x] 1.1. Create `src/lib/openlibrary.ts` with types for Open Library search response (`OLSearchResult`, `OLSearchResponse`) and a `searchBooks(query: string)` function that fetches from `https://openlibrary.org/search.json?q={query}&limit=10&fields=key,title,author_name,first_publish_year,cover_i,number_of_pages_median`
 - [x] 1.2. Add `fetchBookDescription(workKey: string)` function that fetches from `https://openlibrary.org/works/{key}.json` and extracts description (handling both string and `{value: string}` formats). Return null on failure.
-- [ ] 1.3. Add `getBookCoverUrl(coverId: number | null, size: 'S' | 'M' | 'L')` helper that constructs `https://covers.openlibrary.org/b/id/{coverId}-{size}.jpg` or returns null if no coverId
+- [x] 1.3. Add `getBookCoverUrl(coverId: number | null, size: 'S' | 'M' | 'L')` helper that constructs `https://covers.openlibrary.org/b/id/{coverId}-{size}.jpg` or returns null if no coverId
 
 ## 2. Book Create-or-Get Server Action
 
