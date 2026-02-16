@@ -19,19 +19,29 @@ export default function BookSearch({ onBookSelected }: BookSearchProps) {
       return
     }
 
+    // Create AbortController for this search request
+    const abortController = new AbortController()
+
     // Set up debounce timer
     const timeoutId = setTimeout(async () => {
       try {
-        const response = await searchBooks(query.trim())
+        const response = await searchBooks(query.trim(), abortController.signal)
         setResults(response.docs)
       } catch (error) {
+        // Ignore abort errors (they're expected when user types)
+        if (error instanceof Error && error.name === 'AbortError') {
+          return
+        }
         console.error('Search failed:', error)
         setResults([])
       }
     }, 300)
 
-    // Cleanup: cancel pending search when query changes
-    return () => clearTimeout(timeoutId)
+    // Cleanup: cancel pending search and abort in-flight request when query changes
+    return () => {
+      clearTimeout(timeoutId)
+      abortController.abort()
+    }
   }, [query])
 
   return (

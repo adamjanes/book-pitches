@@ -21,9 +21,10 @@ export interface OLSearchResponse {
 /**
  * Search for books on Open Library
  * @param query - Search query (title, author, or combination)
+ * @param signal - Optional AbortSignal to cancel the request
  * @returns Search results with up to 10 books
  */
-export async function searchBooks(query: string): Promise<OLSearchResponse> {
+export async function searchBooks(query: string, signal?: AbortSignal): Promise<OLSearchResponse> {
   const params = new URLSearchParams({
     q: query,
     limit: '10',
@@ -37,6 +38,7 @@ export async function searchBooks(query: string): Promise<OLSearchResponse> {
       headers: {
         'Accept': 'application/json',
       },
+      signal,
     }
   );
 

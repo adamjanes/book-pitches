@@ -40,3 +40,10 @@ while :; do
   echo "--- Restarting in 5s ---" | tee -a "$LOGFILE"
   sleep 5
 done
+
+# Post-build: validate and archive the change
+if [[ -f "$DONE_FLAG" ]]; then
+  echo ""
+  echo "=== Running wrap-up (validate + archive) ===" | tee -a "$LOGFILE"
+  ./wrap.sh 2>&1 | tee -a "$LOGFILE"
+fi
