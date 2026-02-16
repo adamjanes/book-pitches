@@ -26,7 +26,7 @@
 ## 4. Book Selection Flow
 
 - [x] 4.1. Add click handler on search result cards that calls the `createOrGetBook` Server Action with the selected book's Open Library metadata
-- [ ] 4.2. Show a brief loading/selected state on the card while the Server Action runs
+- [x] 4.2. Show a brief loading/selected state on the card while the Server Action runs
 - [ ] 4.3. On success, call an `onBookSelected(book: Book)` callback prop with the created/existing book record
 - [ ] 4.4. On error, display an error message without crashing
 
