@@ -86,3 +86,20 @@ export async function fetchBookDescription(workKey: string): Promise<string | nu
     return null;
   }
 }
+
+/**
+ * Construct Open Library cover image URL from cover ID
+ * @param coverId - Cover ID from Open Library search result (cover_i field)
+ * @param size - Image size: 'S' (small ~40px), 'M' (medium ~180px), 'L' (large ~500px)
+ * @returns Cover image URL or null if no cover ID provided
+ */
+export function getBookCoverUrl(
+  coverId: number | null | undefined,
+  size: 'S' | 'M' | 'L' = 'M'
+): string | null {
+  if (!coverId) {
+    return null;
+  }
+
+  return `https://covers.openlibrary.org/b/id/${coverId}-${size}.jpg`;
+}
