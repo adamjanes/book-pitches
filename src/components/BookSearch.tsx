@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { searchBooks, getBookCoverUrl, type OLSearchResult } from '@/lib/openlibrary'
+import { createOrGetBook } from '@/app/actions/books'
 
 interface BookSearchProps {
   onBookSelected?: (book: any) => void
@@ -12,6 +13,38 @@ export default function BookSearch({ onBookSelected }: BookSearchProps) {
   const [results, setResults] = useState<OLSearchResult[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [selectingKey, setSelectingKey] = useState<string | null>(null)
+
+  // Handle book selection
+  const handleBookClick = async (book: OLSearchResult) => {
+    setSelectingKey(book.key)
+
+    try {
+      const { data, error } = await createOrGetBook({
+        title: book.title,
+        author: book.author_name?.[0] || 'Unknown Author',
+        openLibraryKey: book.key,
+        coverUrl: getBookCoverUrl(book.cover_i, 'L'),
+        publishedYear: book.first_publish_year ?? null,
+      })
+
+      if (error) {
+        console.error('Failed to create/get book:', error)
+        setError(error)
+        setSelectingKey(null)
+        return
+      }
+
+      if (data && onBookSelected) {
+        onBookSelected(data)
+      }
+    } catch (err) {
+      console.error('Unexpected error selecting book:', err)
+      setError('Failed to select book. Please try again.')
+    } finally {
+      setSelectingKey(null)
+    }
+  }
 
   // Debounced search with 300ms delay and 3-character minimum
   useEffect(() => {
@@ -112,10 +145,17 @@ export default function BookSearch({ onBookSelected }: BookSearchProps) {
           const author = book.author_name?.[0] || 'Unknown Author'
           const year = book.first_publish_year || 'Year unknown'
 
+          const isSelecting = selectingKey === book.key
+
           return (
             <div
               key={book.key}
-              className="flex gap-3 p-3 border border-accent/20 rounded-lg bg-white/50 hover:bg-white/80 hover:border-accent/40 transition-all cursor-pointer"
+              onClick={() => handleBookClick(book)}
+              className={`flex gap-3 p-3 border border-accent/20 rounded-lg transition-all cursor-pointer ${
+                isSelecting
+                  ? 'bg-accent/10 border-accent/50 opacity-50'
+                  : 'bg-white/50 hover:bg-white/80 hover:border-accent/40'
+              }`}
             >
               {/* Cover Thumbnail */}
               <div className="flex-shrink-0 w-16 h-24 bg-muted/30 rounded overflow-hidden border border-accent/10">
