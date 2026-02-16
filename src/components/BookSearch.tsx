@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { searchBooks, type OLSearchResult } from '@/lib/openlibrary'
 
 interface BookSearchProps {
   onBookSelected?: (book: any) => void
@@ -8,6 +9,30 @@ interface BookSearchProps {
 
 export default function BookSearch({ onBookSelected }: BookSearchProps) {
   const [query, setQuery] = useState('')
+  const [results, setResults] = useState<OLSearchResult[]>([])
+
+  // Debounced search with 300ms delay and 3-character minimum
+  useEffect(() => {
+    // Clear results if query is too short
+    if (query.trim().length < 3) {
+      setResults([])
+      return
+    }
+
+    // Set up debounce timer
+    const timeoutId = setTimeout(async () => {
+      try {
+        const response = await searchBooks(query.trim())
+        setResults(response.docs)
+      } catch (error) {
+        console.error('Search failed:', error)
+        setResults([])
+      }
+    }, 300)
+
+    // Cleanup: cancel pending search when query changes
+    return () => clearTimeout(timeoutId)
+  }, [query])
 
   return (
     <div className="w-full space-y-4">
