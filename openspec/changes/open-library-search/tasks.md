@@ -19,7 +19,7 @@
 - [x] 3.2. Implement 300ms debounce on input using a custom hook or setTimeout pattern. Enforce 3-character minimum before searching.
 - [x] 3.3. Use AbortController to cancel in-flight requests when new input arrives
 - [x] 3.4. Display search results as cards with cover thumbnail (or placeholder), title, first author, and publish year
-- [ ] 3.5. Add loading spinner state while API request is in flight
+- [x] 3.5. Add loading spinner state while API request is in flight
 - [ ] 3.6. Handle errors: show "Search unavailable, please try again" on timeout (8s) or API failure
 - [ ] 3.7. Handle empty results: show "No books found" message
 
