@@ -32,7 +32,7 @@
 
 ## 5. Integration & Verification
 
-- [ ] 5.1. Create a temporary test page at `/test-search` that renders the BookSearch component with an `onBookSelected` callback that logs the result (for manual verification)
+- [x] 5.1. Create a temporary test page at `/test-search` that renders the BookSearch component with an `onBookSelected` callback that logs the result (for manual verification)
 - [ ] 5.2. Verify: search returns results, covers display, debounce works, loading states show
 - [ ] 5.3. Verify: selecting a new book creates a record in Supabase with correct fields
 - [ ] 5.4. Verify: selecting the same book twice returns the existing record (dedup works)
