@@ -10,12 +10,14 @@ interface BookSearchProps {
 export default function BookSearch({ onBookSelected }: BookSearchProps) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<OLSearchResult[]>([])
+  const [loading, setLoading] = useState(false)
 
   // Debounced search with 300ms delay and 3-character minimum
   useEffect(() => {
     // Clear results if query is too short
     if (query.trim().length < 3) {
       setResults([])
+      setLoading(false)
       return
     }
 
@@ -24,9 +26,11 @@ export default function BookSearch({ onBookSelected }: BookSearchProps) {
 
     // Set up debounce timer
     const timeoutId = setTimeout(async () => {
+      setLoading(true)
       try {
         const response = await searchBooks(query.trim(), abortController.signal)
         setResults(response.docs)
+        setLoading(false)
       } catch (error) {
         // Ignore abort errors (they're expected when user types)
         if (error instanceof Error && error.name === 'AbortError') {
@@ -34,6 +38,7 @@ export default function BookSearch({ onBookSelected }: BookSearchProps) {
         }
         console.error('Search failed:', error)
         setResults([])
+        setLoading(false)
       }
     }, 300)
 
@@ -56,6 +61,13 @@ export default function BookSearch({ onBookSelected }: BookSearchProps) {
           className="w-full px-4 py-3 border border-accent/20 rounded-lg bg-white/50 text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent/40 transition-colors"
         />
       </div>
+
+      {/* Loading Spinner */}
+      {loading && (
+        <div className="flex items-center justify-center py-8">
+          <div className="w-8 h-8 border-4 border-accent/20 border-t-accent rounded-full animate-spin" />
+        </div>
+      )}
 
       {/* Results Area */}
       <div className="grid gap-3">
