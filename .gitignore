@@ -37,8 +37,15 @@ yarn-error.log*
 .mcp.json
 .claude/settings.local.json
 
-# ralph loop logs
+# ralph loop
 ralph-*.log
+BLOCKER.md
+
+# archived artifacts (openspec, old specs)
+archive/
+
+# browser verification screenshots
+verification/
 
 # vercel
 .vercel
