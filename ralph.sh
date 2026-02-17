@@ -15,8 +15,6 @@ DONE_FLAG=$(mktemp)
 BLOCKED_FLAG=$(mktemp)
 rm -f "$DONE_FLAG" "$BLOCKED_FLAG"
 
-trap 'rm -f "$DONE_FLAG" "$BLOCKED_FLAG"' EXIT
-
 # --- Pre-flight checks ---
 preflight_ok=true
 
@@ -50,9 +48,59 @@ if [[ "$preflight_ok" != "true" ]]; then
   exit 1
 fi
 
+# --- Dev server ---
+DEV_SERVER_PID=""
+DEV_PORT=${PORT:-0}
+
+# Find a free port if not specified
+if [[ "$DEV_PORT" -eq 0 ]]; then
+  for port in $(seq 3000 3099); do
+    if ! lsof -iTCP:$port -sTCP:LISTEN -t &>/dev/null; then
+      DEV_PORT=$port
+      break
+    fi
+  done
+  if [[ "$DEV_PORT" -eq 0 ]]; then
+    echo "ERROR: No free port found in 3000-3099"
+    exit 1
+  fi
+fi
+
+if ! lsof -iTCP:$DEV_PORT -sTCP:LISTEN -t &>/dev/null; then
+  echo "Starting dev server on port $DEV_PORT..."
+  npx next dev --webpack --port "$DEV_PORT" &>/dev/null &
+  DEV_SERVER_PID=$!
+  for i in {1..30}; do
+    if lsof -iTCP:$DEV_PORT -sTCP:LISTEN -t &>/dev/null; then
+      echo "Dev server ready on port $DEV_PORT (PID $DEV_SERVER_PID)"
+      break
+    fi
+    sleep 1
+  done
+  if ! lsof -iTCP:$DEV_PORT -sTCP:LISTEN -t &>/dev/null; then
+    echo "ERROR: Dev server failed to start within 30s"
+    kill "$DEV_SERVER_PID" 2>/dev/null
+    exit 1
+  fi
+else
+  echo "Dev server already running on port $DEV_PORT"
+fi
+
+DEV_URL="http://localhost:$DEV_PORT"
+
+cleanup() {
+  rm -f "$DONE_FLAG" "$BLOCKED_FLAG"
+  if [[ -n "$DEV_SERVER_PID" ]]; then
+    echo "Stopping dev server (PID $DEV_SERVER_PID)..."
+    kill "$DEV_SERVER_PID" 2>/dev/null
+    wait "$DEV_SERVER_PID" 2>/dev/null
+  fi
+}
+trap cleanup EXIT
+
 echo "Starting Ralph loop. Ctrl+C to stop."
 echo "Logging to: $LOGFILE"
-echo "Model: $MODEL | Max turns: $MAX_TURNS | Max iterations: $MAX_ITERATIONS"
+echo "Model: $MODEL | Max turns: $MAX_TURNS | Max iterations: $MAX_ITERATIONS | Dev: $DEV_URL"
 echo ""
 
 iteration=0
@@ -66,7 +114,7 @@ while :; do
 
   echo "=== Iteration $iteration ($(date '+%H:%M:%S')) ===" | tee -a "$LOGFILE"
 
-  cat PROMPT_build.md | claude -p \
+  (echo "IMPORTANT: The dev server is running at $DEV_URL — use this URL (not localhost:3000) for all browser verification steps."; echo ""; cat PROMPT_build.md) | claude -p \
     --verbose \
     --dangerously-skip-permissions \
     --model "$MODEL" \
